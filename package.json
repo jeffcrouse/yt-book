@@ -1,0 +1,17 @@
+{
+  "name": "yt-book",
+  "version": "0.0.0",
+  "description": "youtube book maker",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "youtube"
+  ],
+  "author": "Jeff Crouse",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "request": "~2.27.0"
+  }
+}
