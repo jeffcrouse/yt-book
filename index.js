@@ -16,9 +16,13 @@ var request = require('request')
 	querystring = require('querystring')
 	util = require('util')
 	exec = require('child_process').exec
+	path = require('path')
+	fs = require('fs')
+	parser = require("./subtitles-parser.js")
+	async = require('async')
 
 
-var q = "slow loris";
+var q = "celebrity";
 var query = {"q": q, orderby: "published", v: 2, alt: "json", caption: "true"};
 var url = "https://gdata.youtube.com/feeds/api/videos?"+querystring.stringify(query);
 //console.log(url);
@@ -26,22 +30,38 @@ request(url, function (error, response, body) {
 	if (!error && response.statusCode == 200) {
 		var json = JSON.parse(body);
 		console.log(json.feed.entry.length+" entries");
-		json.feed.entry.forEach(function(entry){
-			var link = entry.link[0].href;
-			var cmd = util.format('youtube-dl --write-srt --srt-lang en --no-continue --write-info-json "%s"', link);
+		var entry = json.feed.entry.pop();
+		var link = entry.link[0].href;
+		var cmd = util.format('youtube-dl --write-srt --srt-lang en --no-continue --write-info-json -o "work/%(id)s.%(ext)s" "%s"', link);
 
-			exec(cmd, function(err, stdout, stderr){
-				if(!err) {
-					var regex = /\[download\] Destination: (.+)/
-					var result = stdout.match(regex);
-					if(result) {
-						var video_file = result[1];
-						var info_file = result[1]+".info.json";
-						var info = require( info_file );
-						console.log(video_file);
+		exec(cmd, function(err, stdout, stderr){
+			if(!err) {
+				var regex = /\[download\] Destination: (.+)/
+				var result = stdout.match(regex);
+				if(result) {
+					var video_file = __dirname+"/"+result[1];
+					var info_file = video_file+".info.json";
+					var srt_file = video_file.replace(path.extname(video_file), ".en.srt");
+					var info = require( info_file );
+					var srt = fs.readFileSync(srt_file).toString();
+	
+					var data = parser.fromSrt(srt, false);
+					for(var i=0; i<data.length; i++) {
+						var seek = data[i].startTime.replace(",", ".");
+						var output = util.format("%s/work/%d.png", __dirname, i);
+						var cmd = util.format('ffmpeg -i "%s" -r 1 -an -ss %s "%s"', video_file, seek, output);
+						exec(cmd, function(err, stdout, stderr){
+							if(!err) {
+								console.log("Created thumbnail!")
+							} else {
+								console.log("Problem creating thumbnail.")
+							}
+						});
 					}
+			
 				}
-			}); // exec
-		});
+			}
+		}); // exec
+
 	}
 })
