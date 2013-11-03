@@ -13,6 +13,7 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "request": "~2.27.0",
-    "async": "~0.2.9"
+    "async": "~0.2.9",
+    "pdfkit": "~0.2.1"
   }
 }

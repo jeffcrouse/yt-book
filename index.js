@@ -20,9 +20,10 @@ var request = require('request')
 	fs = require('fs')
 	parser = require("./subtitles-parser.js")
 	async = require('async')
+	PDFDocument = require('pdfkit')
 
 
-var q = "celebrity";
+var q = "cooking";
 var query = {"q": q, orderby: "published", v: 2, alt: "json", caption: "true"};
 var url = "https://gdata.youtube.com/feeds/api/videos?"+querystring.stringify(query);
 //console.log(url);
@@ -32,7 +33,7 @@ request(url, function (error, response, body) {
 		console.log(json.feed.entry.length+" entries");
 		var entry = json.feed.entry.pop();
 		var link = entry.link[0].href;
-		var cmd = util.format('youtube-dl --write-srt --srt-lang en --no-continue --write-info-json -o "work/%(id)s.%(ext)s" "%s"', link);
+		var cmd = util.format('youtube-dl --write-srt --srt-lang en --write-info-json -o "work/%(id)s.%(ext)s" "%s"', link);
 
 		exec(cmd, function(err, stdout, stderr){
 			if(!err) {
@@ -44,8 +45,49 @@ request(url, function (error, response, body) {
 					var srt_file = video_file.replace(path.extname(video_file), ".en.srt");
 					var info = require( info_file );
 					var srt = fs.readFileSync(srt_file).toString();
-	
 					var data = parser.fromSrt(srt, false);
+					
+					var options = {size: [800, 600]};
+					var doc = new PDFDocument(options);
+					doc.info['Title'] = 'Test Document'
+					doc.info['Author'] = 'Devon Govett'
+
+					doc.font('fonts/JandaCurlygirlChunky.ttf')
+						.fontSize(25)
+						.text(info.title, 100, 100)
+
+
+					var page = 1;
+					async.eachSeries(data, function(item, callback){
+
+						var seek = item.startTime.replace(",", ".");
+						console.log(seek)
+
+						var imagefile = util.format("%s/work/%d.png", __dirname, page);
+						var cmd = util.format('ffmpeg -i "%s" -r 1 -an -ss %s "%s"', video_file, seek, imagefile);
+						console.log( cmd );
+
+						exec(cmd, function(err, stdout, stderr){
+							fs.exists(imagefile, function(exists){
+								if(exists) {
+									doc.addPage({size: [800, 600], layout: 'landscape'})
+										.image(imagefile, 0, 0, {width: 800, height: 600})
+   										.text(item.text, 20, 400)
+									callback();
+								} else callback("Problem creating thumbnail.")
+							});
+						});
+						page++;
+
+					}, function(err){
+						if(err) {
+							console.log(err)
+						} else {
+							console.log("done!")
+							doc.write('work/output.pdf');
+						}
+					});
+					/*
 					for(var i=0; i<data.length; i++) {
 						var seek = data[i].startTime.replace(",", ".");
 						var output = util.format("%s/work/%d.png", __dirname, i);
@@ -58,7 +100,9 @@ request(url, function (error, response, body) {
 							}
 						});
 					}
-			
+					*/
+				} else {
+					console.log("File not downloaded")
 				}
 			}
 		}); // exec
