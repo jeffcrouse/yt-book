@@ -14,6 +14,10 @@
   "dependencies": {
     "request": "~2.27.0",
     "async": "~0.2.9",
-    "pdfkit": "~0.2.1"
+    "pdfkit": "~0.2.1",
+    "optimist": "~0.6.0",
+    "string": "~1.6.1",
+    "glob": "~3.2.7",
+    "mime": "~1.2.11"
   }
 }
