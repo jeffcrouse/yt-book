@@ -16,12 +16,13 @@ var request = require('request')
 	argv = require('optimist').argv
 	glob = require("glob")
 	mime = require('mime')
+	youtubedl = require('youtube-dl')
 	YouTubeBook = require('./YouTubeBook')
 
 
 // Examine the YouTube URL passed in by user
 var link = argv._.pop();
-var regex = new RegExp("(https?://)?(?:w+\.)?youtu(?:\.be|be\.com)/(?:watch\\?v=)?([a-zA-Z0-9-]{11})", "i")
+var regex = new RegExp("(https?://)?(?:w+\.)?youtu(?:\.be|be\.com)/(?:watch\\?v=)?([a-zA-Z0-9-_]{11})", "i")
 var matches = link.match( regex );
 if(!matches)
 	throw new Error("Not a valid YouTube url.")
@@ -36,7 +37,8 @@ console.log("Working Directory: %s", work_dir);
 
 
 // Download the video
-var cmd = util.format('youtube-dl --continue --write-sub --sub-lang en --write-info-json -o "%s/video.%(ext)s" "%s"', work_dir, link);
+var youtube_dl = util.format("%s/bin/youtube-dl", __dirname);
+var cmd = util.format('%s --continue --write-sub --sub-lang en --write-info-json -o "%s/video.%(ext)s" "%s"', youtube_dl, work_dir, link);
 console.log("Downloading %s", id);
 exec(cmd, function(err, stdout, stderr){
 	if(err)
@@ -88,3 +90,4 @@ exec(cmd, function(err, stdout, stderr){
 		});
 	})
 }); // exec
+
