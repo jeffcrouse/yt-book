@@ -14,3 +14,4 @@ Make a book out of a YouTube video
 
 # TO DO
 - Make command line friendly
+- Use node-canvas instead of PDFKit
