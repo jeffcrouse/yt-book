@@ -83,8 +83,7 @@ exec(cmd, function(err, stdout, stderr){
 			if(err) throw err;
 			else {
 				var book = new YouTubeBook(info, pages); // <-------   Once all content is gathered, pass it to MakeBook
-				var filename = util.format("%s/%s.pdf", __dirname, id);
-				book.save(filename);
+				book.save( util.format("%s/%s.pdf", __dirname, id),  util.format("%s/%s-cover.pdf", __dirname, id));
 			}
 		});
 	})
