@@ -10,13 +10,12 @@ var request = util = require('util')
 	exec = require('child_process').exec
 	path = require('path')
 	fs = require('fs')
-	parser = require("./subtitles-parser.js")
 	async = require('async')
 	argv = require('optimist').argv
 	glob = require("glob")
 	mime = require('mime')
-	youtubedl = require('youtube-dl')
-	YouTubeBook = require('./YouTubeBook')
+	parser = require("./lib/subtitles-parser")
+	YouTubeBook = require('./lib/YouTubeBook')
 
 
 // Examine the YouTube URL passed in by user
@@ -28,7 +27,7 @@ if(!matches)
 
 // Create a working directory
 var id = matches[2];
-var work_dir = util.format("%s/%s", __dirname, id);
+var work_dir = util.format("%s/%s", process.cwd(), id);
 console.log("Working Directory: %s", work_dir);
 if(!fs.existsSync(work_dir)) 
 	fs.mkdirSync(work_dir);
