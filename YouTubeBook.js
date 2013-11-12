@@ -38,28 +38,10 @@ var YouTubeBook = function(info, pages, id) {
 		ctx.fillText(str, x, y);
 	}
 
-	var getLines = function(str, split1, split2) {
-		var lines = [];
-		info.title.split(split1).forEach(function(part){
-			var tmp = "";
-			part.split(split2).forEach(function(word){
-				var tmp2 = tmp + word + " ";
-				if(ctx.measureText(tmp2).width < max_width) {
-					tmp = tmp2;
-				} else {
-					lines.push(tmp);
-					tmp = word + " ";
-				}
-			});
-			lines.push(tmp);
-		});
-		return lines;
-	}
-
 	var drawTitlePage = function() {
 		ctx.fillStyle = '#000000';
 		ctx.font = util.format("bold %dpx %s", sizes.big, fontName);
-		var lines = getLines(info.title, ":", "");
+		var lines = [];
 		info.title.split(":").forEach(function(part){
 			var tmp = "";
 			part.split(" ").forEach(function(word){
@@ -87,7 +69,6 @@ var YouTubeBook = function(info, pages, id) {
 	var drawDescription = function( ) {
 		var lines = [];
 		var total_height = 0;
-		var line_height = 12;
 
 		ctx.font = util.format("%dpx %s", sizes.regular, fontName);
 		info.description.split('\n').forEach(function(paragraph){
@@ -97,21 +78,20 @@ var YouTubeBook = function(info, pages, id) {
 				if(ctx.measureText(tmp2).width < max_width) {
 					tmp = tmp2;
 				} else {
-					total_height += line_height + leading;
+					total_height += sizes.regular + leading;
 					lines.push(tmp);
 					tmp = word + " ";
 				}
 			});
 			lines.push(tmp);
-			total_height += line_height + leading;
-			//total_height += line_height + leading;
+			total_height += sizes.regular + leading;
 		});
 
 		ctx.fillStyle = '#000000';
 		var y = (canvas.height/2)-(total_height/2);
 		lines.forEach(function(line){
 			ctx.fillText(line, margin, y);
-			y += line_height + leading;
+			y += sizes.regular + leading;
 		});
 	}
 
