@@ -10,6 +10,7 @@ It turns out that YouTube videos are so varied, unpredictable, and there aren't 
 ## Requirements
 1. ffmpeg
 1. python
+1. the node-canvas module requires Cairo.  I had some trouble installing it on OSX, [but there are some instructions here](https://github.com/LearnBoost/node-canvas/wiki/Installation---OSX).
 
 ## Instructions
 1. [Search for a YouTube video that contains captions](http://webapps.stackexchange.com/questions/30496/how-to-search-youtube-for-videos-with-english-subtitles)
@@ -35,4 +36,7 @@ It turns out that YouTube videos are so varied, unpredictable, and there aren't 
 
 ## To Do
 - Make npm friendly (specify bin in package.json, register with npm)
-
+- I'd like to use "thumbnail" from the info file as the cover image, but I can't, for the life of me, get it to work.  It seems others have had this problem:
+	- https://github.com/LearnBoost/node-canvas/issues/254
+	- https://github.com/LearnBoost/node-canvas/issues/138
+	- https://github.com/LearnBoost/node-canvas/issues/122
