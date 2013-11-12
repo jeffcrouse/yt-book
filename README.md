@@ -7,6 +7,10 @@ In the tradition of [Aram Bartholl's "Forgot Your Password"](http://datenform.de
 
 It turns out that YouTube videos are so varied, unpredictable, and there aren't enough subtitles for this to work how I wanted it to work. With some more attention to detail and care, this could work, but I've put in as much time as I can.  Feel free to try it out, though!
 
+## Requirements
+1. ffmpeg
+1. python
+
 ## Instructions
 1. [Search for a YouTube video that contains captions](http://webapps.stackexchange.com/questions/30496/how-to-search-youtube-for-videos-with-english-subtitles)
 1. Note the URL of the video (eg: [http://www.youtube.com/watch?v=x9lCTpbcVn4](http://www.youtube.com/watch?v=x9lCTpbcVn4)
@@ -30,5 +34,5 @@ It turns out that YouTube videos are so varied, unpredictable, and there aren't 
 1. Construct a cover image using random images from the video
 
 ## To Do
-- Make command line/npm friendly (specify bin in package.json)
-- Use node-canvas instead of PDFKit
+- Make npm friendly (specify bin in package.json, register with npm)
+

@@ -6,8 +6,7 @@
 *	11-9-2013
 */
 
-var request = require('request')
-	util = require('util')
+var request = util = require('util')
 	exec = require('child_process').exec
 	path = require('path')
 	fs = require('fs')
@@ -30,10 +29,9 @@ if(!matches)
 // Create a working directory
 var id = matches[2];
 var work_dir = util.format("%s/%s", __dirname, id);
-if(!fs.existsSync(work_dir)) {
-	fs.mkdirSync(work_dir);
-}
 console.log("Working Directory: %s", work_dir);
+if(!fs.existsSync(work_dir)) 
+	fs.mkdirSync(work_dir);
 
 
 // Download the video
@@ -57,7 +55,7 @@ exec(cmd, function(err, stdout, stderr){
 				video_file = file;
 		});
 		if(!video_file)
-			throw new Exception("Couldn't find video file.");
+			throw new Error("Couldn't find video file.");
 
 		var info = require( video_file+".info.json" );
 		var srt = fs.readFileSync(work_dir+"/video.en.srt").toString();
@@ -84,10 +82,10 @@ exec(cmd, function(err, stdout, stderr){
 		}, function(err){
 			if(err) throw err;
 			else {
-				var book = new YouTubeBook(info, pages); // <-------   Once all content is gathered, pass it to MakeBook
-				book.save( util.format("%s/%s.pdf", __dirname, id),  util.format("%s/%s-cover.pdf", __dirname, id));
+				// Once all content is gathered, pass it to make the book
+				new YouTubeBook(info, pages, id); 
 			}
-		});
-	})
+		}); // end async.eachSeries
+	}); // end glob
 }); // exec
 
